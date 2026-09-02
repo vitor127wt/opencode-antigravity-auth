@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import {
   ANTIGRAVITY_ENDPOINT,
+  ANTIGRAVITY_CLI_USER_AGENT,
   GEMINI_CLI_ENDPOINT,
   GEMINI_CLI_HEADERS,
   EMPTY_SCHEMA_PLACEHOLDER_NAME,
@@ -2283,7 +2284,9 @@ export function prepareAntigravityRequest(
 
     headers.set(
       "User-Agent",
-      fingerprintHeaders["User-Agent"] || selectedHeaders["User-Agent"],
+      effectiveModel.toLowerCase().startsWith("gemini-3.8-flash")
+        ? ANTIGRAVITY_CLI_USER_AGENT
+        : fingerprintHeaders["User-Agent"] || selectedHeaders["User-Agent"],
     );
   } else {
     // Gemini CLI mode: match opencode-gemini-auth Code Assist header set exactly

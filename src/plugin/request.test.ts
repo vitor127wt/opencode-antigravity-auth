@@ -647,6 +647,17 @@ describe("request.ts", () => {
       expect(headers.get("Authorization")).toBe("Bearer test-token");
     });
 
+    it("uses the Antigravity CLI identity for Gemini 3.8 Flash", () => {
+      const result = prepareAntigravityRequest(
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent",
+        { method: "POST", body: JSON.stringify({ contents: [] }) },
+        mockAccessToken,
+        mockProjectId,
+      );
+      const headers = result.init.headers as Headers;
+      expect(headers.get("User-Agent")).toMatch(/^antigravity\/cli\/1\.1\.24 /);
+    });
+
 it("removes API key headers", () => {
       const result = prepareAntigravityRequest(
         "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent",
@@ -1339,9 +1350,12 @@ it("removes API key headers", () => {
         });
       });
 
-      it("maps gemini-3.6-flash to the Antigravity medium backend by default", () => {
+      it.each([
+        ["gemini-3.6-flash", "gemini-3.6-flash-medium"],
+        ["gemini-3.8-flash", "gemini-3.8-flash-medium"],
+      ])("maps %s to its Antigravity backend by default", (model, backendModel) => {
         const result = prepareAntigravityRequest(
-          "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent",
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
           {
             method: "POST",
             body: JSON.stringify({
@@ -1359,9 +1373,9 @@ it("removes API key headers", () => {
           undefined,
           "antigravity"
         );
-        expect(result.effectiveModel).toBe("gemini-3.6-flash-medium");
+        expect(result.effectiveModel).toBe(backendModel);
         const wrapped = JSON.parse(result.init.body as string);
-        expect(wrapped.model).toBe("gemini-3.6-flash-medium");
+        expect(wrapped.model).toBe(backendModel);
         expect(wrapped.request.generationConfig.thinkingConfig).toMatchObject({
           thinkingLevel: "medium",
           includeThoughts: true,
@@ -1474,6 +1488,7 @@ it("removes API key headers", () => {
 
       it.each([
         ["gemini-3.6-flash", "medium"],
+        ["gemini-3.8-flash", "medium"],
         ["gemini-3.5-flash-lite", "minimal"],
       ])("keeps %s bare with its default thinking level on gemini-cli", (model, thinkingLevel) => {
         const result = prepareAntigravityRequest(
