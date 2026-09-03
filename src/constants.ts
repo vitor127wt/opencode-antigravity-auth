@@ -68,7 +68,7 @@ export const GEMINI_CLI_ENDPOINT = ANTIGRAVITY_ENDPOINT_PROD;
 /**
  * Hardcoded project id used when Antigravity does not return one (e.g., business/workspace accounts).
  */
-export const ANTIGRAVITY_DEFAULT_PROJECT_ID = "aicode-consumers";
+export const ANTIGRAVITY_DEFAULT_PROJECT_ID = "rising-fact-p41fc";
 
 // Identity sent by the first-party Agy CLI for Gemini 3.8 entitlement checks.
 const ANTIGRAVITY_CLI_OS = process.platform === "win32" ? "windows" : process.platform;

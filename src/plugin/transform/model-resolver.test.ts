@@ -314,6 +314,14 @@ describe("resolveModelWithTier", () => {
       expect(result.quotaPreference).toBe("antigravity");
       expect(result.explicitQuota).toBe(true);
     });
+
+    it("rejects the unsupported minimal tier for Gemini 3.8 Antigravity", () => {
+      expect(() =>
+        resolveModelWithTier("antigravity-gemini-3.8-flash-minimal"),
+      ).toThrow(
+        'Gemini 3.8 Flash does not support thinking level "minimal"; use low, medium, or high.',
+      );
+    });
   });
 
   describe("Claude thinking models default budget", () => {

@@ -71,6 +71,7 @@ import {
   resolveModelForHeaderStyle,
   resolveAntigravityGemini35FlashBackendModel,
   resolveAntigravityGemini36FlashBackendModel,
+  resolveAntigravityGemini38FlashBackendModel,
   getDefaultGemini3ThinkingLevel,
   isClaudeModel,
   isClaudeThinkingModel,
@@ -1345,6 +1346,11 @@ export function prepareAntigravityRequest(
         }
 
         if (headerStyle === "antigravity") {
+          const gemini38FlashBackendModel =
+            resolveAntigravityGemini38FlashBackendModel(
+              effectiveModel,
+              tierThinkingLevel,
+            );
           const gemini36FlashBackendModel =
             resolveAntigravityGemini36FlashBackendModel(
               effectiveModel,
@@ -1355,7 +1361,10 @@ export function prepareAntigravityRequest(
               effectiveModel,
               tierThinkingLevel,
             );
-          if (gemini36FlashBackendModel) {
+          if (gemini38FlashBackendModel) {
+            effectiveModel = gemini38FlashBackendModel;
+            wrappedBody.model = gemini38FlashBackendModel;
+          } else if (gemini36FlashBackendModel) {
             effectiveModel = gemini36FlashBackendModel;
             wrappedBody.model = gemini36FlashBackendModel;
           } else if (gemini35FlashBackendModel) {
@@ -1489,6 +1498,11 @@ export function prepareAntigravityRequest(
         }
 
         if (headerStyle === "antigravity") {
+          const gemini38FlashBackendModel =
+            resolveAntigravityGemini38FlashBackendModel(
+              effectiveModel,
+              tierThinkingLevel,
+            );
           const gemini36FlashBackendModel =
             resolveAntigravityGemini36FlashBackendModel(
               effectiveModel,
@@ -1499,7 +1513,9 @@ export function prepareAntigravityRequest(
               effectiveModel,
               tierThinkingLevel,
             );
-          if (gemini36FlashBackendModel) {
+          if (gemini38FlashBackendModel) {
+            effectiveModel = gemini38FlashBackendModel;
+          } else if (gemini36FlashBackendModel) {
             effectiveModel = gemini36FlashBackendModel;
           } else if (gemini35FlashBackendModel) {
             effectiveModel = gemini35FlashBackendModel;
@@ -2284,7 +2300,7 @@ export function prepareAntigravityRequest(
 
     headers.set(
       "User-Agent",
-      effectiveModel.toLowerCase().startsWith("gemini-3.8-flash")
+      /^gemini-3\.8-flash-(?:low|medium|high)$/i.test(effectiveModel)
         ? ANTIGRAVITY_CLI_USER_AGENT
         : fingerprintHeaders["User-Agent"] || selectedHeaders["User-Agent"],
     );

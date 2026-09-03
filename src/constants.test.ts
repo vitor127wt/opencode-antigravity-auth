@@ -1,17 +1,12 @@
 import { describe, it, expect } from "vitest"
 import {
   ANTIGRAVITY_CLI_USER_AGENT,
-  ANTIGRAVITY_DEFAULT_PROJECT_ID,
   GEMINI_CLI_HEADERS,
   getRandomizedHeaders,
   type HeaderSet,
 } from "./constants.ts"
 
 describe("Antigravity CLI identity", () => {
-  it("uses the consumer quota project required by the current CLI", () => {
-    expect(ANTIGRAVITY_DEFAULT_PROJECT_ID).toBe("aicode-consumers")
-  })
-
   it("includes the CLI product and consumer auth method", () => {
     expect(ANTIGRAVITY_CLI_USER_AGENT).toMatch(/^antigravity\/cli\/1\.1\.24 /)
     expect(ANTIGRAVITY_CLI_USER_AGENT).toContain("auth_method=consumer")

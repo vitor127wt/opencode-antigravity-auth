@@ -93,7 +93,7 @@ const GEMINI_37_FLASH_REGEX =
  */
 const GEMINI_37_FLASH_MODEL = "gemini-3.7-flash-tiered";
 const GEMINI_38_FLASH_REGEX =
-  /^gemini-3\.8-flash(?:-(low|medium|high))?$/i;
+  /^gemini-3\.8-flash(?:-(minimal|low|medium|high))?$/i;
 const GEMINI_38_FLASH_MODELS = {
   low: "gemini-3.8-flash-low",
   medium: "gemini-3.8-flash-medium",
@@ -258,7 +258,9 @@ export function resolveAntigravityGemini38FlashBackendModel(
 
   const level = (thinkingLevel ?? match[1] ?? "medium").toLowerCase();
   if (level !== "low" && level !== "medium" && level !== "high") {
-    return undefined;
+    throw new Error(
+      `Gemini 3.8 Flash does not support thinking level "${level}"; use low, medium, or high.`,
+    );
   }
   return GEMINI_38_FLASH_MODELS[level];
 }
